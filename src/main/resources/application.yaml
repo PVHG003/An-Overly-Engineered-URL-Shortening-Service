@@ -2,4 +2,4 @@ spring:
   application:
     name: minilink
   profiles:
-    active: dev   # use 'prod' or 'test' when deployed or tested
+    active: dev   # use 'prod' or 'test.txt' when deployed or tested
