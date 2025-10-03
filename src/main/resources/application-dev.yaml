@@ -26,6 +26,7 @@ spring:
     multipart:
       max-file-size: 5MB
       max-request-size: 10MB
+
   security:
     oauth2:
       resourceserver:
@@ -41,6 +42,7 @@ logging:
     name: logs/minilink-dev.log
 
 jwt:
+  private-key-location: classpath:keys/private.pem
   expiration: 3600000 # 1 hour in ms
   refresh-expiration: 604800000 # 7 days in ms
 

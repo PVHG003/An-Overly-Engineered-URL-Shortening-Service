@@ -20,7 +20,8 @@ public class Role extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long roleId;
 
-    private String roleName;
+    @Enumerated(EnumType.STRING)
+    private RoleName roleName;
 
     @OneToMany(mappedBy = "role")
     private Set<User> users;

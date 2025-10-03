@@ -37,4 +37,6 @@ public class VerificationToken extends BaseEntity {
 
     @Column(nullable = false)
     private Instant expiredAt;
+
+
 }
