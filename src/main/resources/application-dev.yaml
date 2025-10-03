@@ -1,0 +1,61 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/minilink_dev
+    username: postgres
+    password: root
+    driver-class-name: org.postgresql.Driver
+
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  jackson:
+    serialization:
+      INDENT_OUTPUT: true
+
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 10MB
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          public-key-location: classpath:keys/public.pem
+
+logging:
+  level:
+    root: INFO
+    web: TRACE
+    vn.pvhg.minilink: DEBUG
+  file:
+    name: logs/minilink-dev.log
+
+jwt:
+  expiration: 3600000 # 1 hour in ms
+  refresh-expiration: 604800000 # 7 days in ms
+
+url:
+  base: "http://localhost:8080/r/"  # for short URL redirects
+
+qr:
+  output-dir: "./qr-codes/"
+  format: "PNG"
+
+anonymous:
+  session-expiration-minutes: 120
+
+minio:
+  url: "http://localhost:9000"
+  access-key: minioadmin
+  secret-key: minioadmin
+  bucket: qr-codes

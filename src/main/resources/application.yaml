@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: minilink
+  profiles:
+    active: dev   # use 'prod' or 'test' when deployed or tested
