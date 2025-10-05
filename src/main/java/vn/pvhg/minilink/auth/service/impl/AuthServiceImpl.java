@@ -8,10 +8,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import vn.pvhg.minilink.auth.dto.*;
-import vn.pvhg.minilink.auth.model.Provider;
-import vn.pvhg.minilink.auth.model.Role;
-import vn.pvhg.minilink.auth.model.RoleName;
-import vn.pvhg.minilink.auth.model.User;
+import vn.pvhg.minilink.auth.model.*;
+import vn.pvhg.minilink.auth.repository.RefreshTokenRepository;
 import vn.pvhg.minilink.auth.repository.RoleRepository;
 import vn.pvhg.minilink.auth.repository.UserRepository;
 import vn.pvhg.minilink.auth.service.AuthService;
@@ -20,20 +18,21 @@ import vn.pvhg.minilink.exception.auth.UserAlreadyExistsException;
 import vn.pvhg.minilink.exception.auth.UserNotEnabledException;
 import vn.pvhg.minilink.util.JwtUtils;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.util.UUID;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
-
-    //    private static final int VERIFICATION_CODE_LENGTH = 6;
-    //    private static final int VERIFICATION_CODE_EXPIRY_MINUTES = 15;
-    //    private static final int REFRESH_TOKEN_EXPIRY_DAYS = 30;
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtil;
     private final AuthenticationManager authenticationManager;
     private final RoleRepository roleRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Override
     @Transactional
@@ -87,15 +86,20 @@ public class AuthServiceImpl implements AuthService {
         );
 
         String accessToken = jwtUtil.generateToken(user);
-        String refreshToken = jwtUtil.generateRefreshToken(user);
+        RefreshToken refreshToken = RefreshToken.builder()
+                .user(user)
+                .token(UUID.randomUUID().toString())
+                .isRevoked(false)
+                .issuedAt(Instant.now())
+                .expiredAt(Instant.now().plus(Duration.ofDays(7)))
+                .build();
+        refreshTokenRepository.save(refreshToken);
 
         log.info("User signed in successfully: {}", user.getEmail());
 
         return new SignInResponse(
                 accessToken,
-                refreshToken,
-                "Bearer",
-                jwtUtil.getAccessTokenExpiry(),
+                refreshToken.getToken(),
                 user.getUserId(),
                 user.getEmail(),
                 user.isEnabled()

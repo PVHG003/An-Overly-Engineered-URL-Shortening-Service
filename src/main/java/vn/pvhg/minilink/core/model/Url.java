@@ -1,10 +1,7 @@
 package vn.pvhg.minilink.core.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import vn.pvhg.minilink.auth.model.User;
 import vn.pvhg.minilink.common.BaseEntity;
 
@@ -15,6 +12,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "urls")
 public class Url extends BaseEntity {
@@ -30,7 +28,7 @@ public class Url extends BaseEntity {
     private String originalUrl;
 
     @Column(nullable = false, unique = true, length = 50)
-    private String shortCode;
+    private String shortenUrl;
 
     @Column(nullable = false)
     private boolean active = true;
@@ -38,8 +36,10 @@ public class Url extends BaseEntity {
     private Instant expiresAt;
 
     @Column(nullable = false)
+    @Builder.Default
     private long totalClicks = 0;
 
     @Column(nullable = false)
+    @Builder.Default
     private long qrScans = 0;
 }
